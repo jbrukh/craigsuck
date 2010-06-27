@@ -177,7 +177,7 @@ def get_args():
     global QUERIES, MIN_ASK, MAX_ASK, BEDROOMS
     """Get the commandline arguments."""
     opts,args = getopt.getopt(sys.argv[1:],\
-            "q:m:M:b:h", ['query=', 'minAsk=', 'maxAsk=', 'bedrooms=', 'help'])
+            "q:m:M:b:u:h", [ 'help', 'query=', 'minAsk=', 'maxAsk=', 'bedrooms=', 'url='])
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage()
