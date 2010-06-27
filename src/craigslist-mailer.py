@@ -16,10 +16,11 @@ import random
 import time
 import os.path
 import pickle
-import scraper
-import emailer
 import conf
 import getopt
+import urllib2
+import smtplib
+from BeautifulSoup import BeautifulStoneSoup
 
 QUERIES=[]
 MIN_ASK=""
@@ -44,8 +45,8 @@ def retrieve_listings(query, min_ask, max_ask, bedrooms):
         print "Could not retrieve cache: ", errstr
 
     try:
-        url = scraper.build_url(conf.CRAIGS_URL, query, min_ask, max_ask, bedrooms)
-        items = scraper.extract(scraper.scrape(url))
+        url = build_url(conf.CRAIGS_URL, query, min_ask, max_ask, bedrooms)
+        items = extract(scrape(url))
     except:
         print "Could not retrieve listings."
         return
@@ -62,7 +63,7 @@ def retrieve_listings(query, min_ask, max_ask, bedrooms):
         # send the e-mail
         msg = get_msg(new_listings, query)
         try:
-            emailer.send_email(conf.SENDER, conf.RECIPIENT, msg)
+            send_email(conf.SENDER, conf.RECIPIENT, msg)
         except:
             print "Could not send email: ", sys.exc_info()[0]
     else:
@@ -101,6 +102,56 @@ def sleep_randomly():
     sleep_time = random.randint(60,60*5)
     print "Sleeping %d seconds before next retrieve..." % sleep_time
     time.sleep(sleep_time)
+    
+def scrape( url ):
+    """Retrieves the Craigslist page as XML in a BeautifulStoneSoup object."""
+    page = urllib2.urlopen(url)
+    return BeautifulStoneSoup(page)
+
+def extract( soup ):
+    """Retrieves the titles and links of listings from the scrape as tuples."""
+    return [(strip_cdata(item.title.string), item.link.string) for item in soup('item')]
+
+def strip_cdata( item ):
+    """Removes ugly CDATA tags."""
+    return str(item).replace('<![CDATA[','').replace(']]>','')
+
+def build_url( base_url, query="", min_ask="", max_ask="", bedrooms="" ):
+    # at least one of the parameters must be non-trivial,
+    # or else the url will not produce RSS
+    if not min_ask:
+        min_ask = "1"  # ensures RSS is delivered
+    
+    # checks
+    if query:
+        query = query.replace(' ', '+')
+    if min_ask:
+        int(min_ask)  # raises ValueError if not integer
+    if max_ask:
+        int(max_ask)  # same
+    if bedrooms:
+        int(bedrooms) # same
+    
+    return "%s?format=rss&query=%s&minAsk=%s&maxAsk=%s&bedrooms=%s" %\
+                ( base_url, query, str(min_ask), str(max_ask), str(bedrooms) )
+
+def send_email( sender, recipients, msg ):
+    """Send an email."""
+    session = smtplib.SMTP(conf.SERVER)
+    session.starttls()
+    session.login(conf.SMTP_USER, conf.SMTP_PASS)
+    smtpresult = session.sendmail(sender, recipients, msg)
+  
+    if smtpresult:
+        errstr = ""
+        for recip in smtpresult.keys():
+            errstr = """Could not delivery mail to: %s
+  
+  Server said: %s
+  %s
+  
+  %s""" % (recip, smtpresult[recip][0], smtpresult[recip][1], errstr)
+        raise smtplib.SMTPException, errstr
     
 def usage():
     """Usage."""
