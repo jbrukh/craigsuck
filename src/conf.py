@@ -7,8 +7,8 @@ Created on Jun 26, 2010
 #
 # SET THE SMTP CREDENTIALS
 #
-SMTP_USER='username'
-SMTP_PASS='password'
+SMTP_USER='username'    # these defaults seem to work on gmail
+SMTP_PASS='password'    # haha
 SERVER='smtp.gmail.com'
 
 #
