@@ -26,6 +26,7 @@ QUERIES=[]
 MIN_ASK=""
 MAX_ASK=""
 BEDROOMS=""
+LISTINGS=[]
 
 def main():
     """The main loop."""
@@ -39,6 +40,8 @@ def main():
 
 def retrieve_listings(query, min_ask, max_ask, bedrooms):
     """Retrieve the listings and e-mail them."""
+    global LISTINGS
+
     try:
         titles = load_cache()
     except IOError, errstr:
@@ -58,16 +61,20 @@ def retrieve_listings(query, min_ask, max_ask, bedrooms):
             print title
             new_listings.append(item)
             titles.add(title)
+
+    for listing in new_listings:
+       LISTINGS.append(listing)
     
-    if len(new_listings)>0:
+    if len(LISTINGS)>=5:
         # send the e-mail
-        msg = get_msg(new_listings, query)
+        msg = get_msg(LISTINGS, query)
         try:
             send_email(conf.SENDER, conf.RECIPIENTS.split(';'), msg)
+            LISTINGS=[]
         except:
             print "Could not send email: ", sys.exc_info()[0]
     else:
-        print "No new listings."
+        print "Not enough new listings, only have %d listings so far." % len(LISTINGS)
     
     # persist
     if len(titles)>conf.CACHE_SIZE:
