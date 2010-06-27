@@ -12,9 +12,9 @@ SMTP_PASS   ='password'    # haha
 SERVER      ='smtp.gmail.com'
 
 #
-# SET THE RECIPIENT
+# SET THE RECIPIENTS (COLON SEPARATED)
 #
-RECIPIENT   ='you@poop.com'
+RECIPIENTS   ='you@poop.com;me@poop.com'
 
 #
 # SET THE BASE CRAIGSLIST URL TO SCRAPE

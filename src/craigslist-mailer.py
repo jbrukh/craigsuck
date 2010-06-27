@@ -63,7 +63,7 @@ def retrieve_listings(query, min_ask, max_ask, bedrooms):
         # send the e-mail
         msg = get_msg(new_listings, query)
         try:
-            send_email(conf.SENDER, conf.RECIPIENT, msg)
+            send_email(conf.SENDER, conf.RECIPIENTS.split(';'), msg)
         except:
             print "Could not send email: ", sys.exc_info()[0]
     else:
@@ -177,7 +177,7 @@ def get_args():
     global QUERIES, MIN_ASK, MAX_ASK, BEDROOMS
     """Get the commandline arguments."""
     opts,args = getopt.getopt(sys.argv[1:],\
-            "q:m:M:b:u:h", [ 'help', 'query=', 'minAsk=', 'maxAsk=', 'bedrooms=', 'url='])
+            "q:m:M:b:h", ['query=', 'minAsk=', 'maxAsk=', 'bedrooms=', 'help'])
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage()
