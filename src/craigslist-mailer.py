@@ -81,7 +81,7 @@ def retrieve_listings(query, min_ask, max_ask, bedrooms):
 def get_msg( new_listings, query ):
     """Create the listing summary email."""
     subject = "Apartments -- %d for Query: %s" % (len(new_listings), query)
-    header = "From: %s\nTo: %s\nSubject: %s\n\n" % (conf.SENDER, conf.RECIPIENT, subject)
+    header = "From: %s\nTo: %s\nSubject: %s\n\n" % (conf.SENDER, conf.RECIPIENTS, subject)
     body = header+"\n\n".join(["%s\n%s"%(item) for item in new_listings])  
     return body    
     
