@@ -67,9 +67,15 @@ def retrieve_listings(query, min_ask, max_ask, bedrooms):
         except:
             print "Could not send email: ", sys.exc_info()[0]
     else:
-        print "Nothing to send."
+        print "No new listings."
     
     # persist
+    if len(titles)>conf.CACHE_SIZE:
+        # keep the cache at conf.CACHE_SIZE
+        # you want to keep this number relatively large: if the cache is too small
+        # the application will forget that it has already seen certain recent listings
+        # and will e-mail them again
+        titles = set(list(titles)[1:conf.CACHE_SIZE])
     cache(titles)
 
 def get_msg( new_listings, query ):
@@ -156,11 +162,15 @@ def send_email( sender, recipients, msg ):
 def usage():
     """Usage."""
     print """
-        python craigslist-mailer.py 
+        Craigslist Mailer.  Copyright (c) 2010 Jake Brukhman.
+        
+        python craigslist-mailer.py
+        
             [-q,--queries <STRING,STRING,...>]   -- search queries
             [-m,--minAsk <INTEGER>]              -- minimum price
             [-M,--maxAsk <INTEGER>]              -- maximum price
             [-b,--bedrooms <INTEGER>]            -- number of bedrooms
+            [-u,--url <STRING>]                  -- override the url
     """
 
 def get_args():
@@ -169,6 +179,9 @@ def get_args():
     opts,args = getopt.getopt(sys.argv[1:],\
             "q:m:M:b:h", ['query=', 'minAsk=', 'maxAsk=', 'bedrooms=', 'help'])
     for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage()
+            sys.exit(0)
         if opt in ('-q', '--queries'):
             QUERIES=arg.split(',')
         if opt in ('-m', '--minAsk'):
@@ -177,9 +190,8 @@ def get_args():
             MAX_ASK=str(int(arg))
         if opt in ('-b', '--bedrooms'):
             BEDROOMS=str(int(arg))
-        if opt in ('-h', '--help'):
-            usage()
-            sys.exit(0)
+        if opt in ('-u', '--url'):
+            conf.CRAIGS_URL=arg
 
 if __name__=='__main__':
     try:
