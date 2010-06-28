@@ -50,6 +50,10 @@ def retrieve_listings(query, min_ask, max_ask, bedrooms):
     try:
         url = build_url(conf.CRAIGS_URL, query, min_ask, max_ask, bedrooms)
         items = extract(scrape(url))
+    except AttributeError:
+        # one of CRAIGS_URL or --url must be set!
+        print "Set the CRAIGS_URL variable or specify --url."
+        sys.exit(2)
     except:
         print "Could not retrieve listings."
         return
@@ -64,11 +68,6 @@ def retrieve_listings(query, min_ask, max_ask, bedrooms):
 
     for listing in new_listings:
        LISTINGS.append(listing)
-
-    try:
-       batch_size = conf.BATCH_SIZE
-    except:
-       batch_size = 5
     
     if len(LISTINGS)>=batch_size:
         # send the e-mail
@@ -155,7 +154,7 @@ def build_url( base_url, query="", min_ask="", max_ask="", bedrooms="" ):
 
 def send_email( sender, recipients, msg ):
     """Send an email."""
-    session = smtplib.SMTP(conf.SERVER)
+    session = smtplib.SMTP(conf.SMTP_SERVER)
     session.starttls()
     session.login(conf.SMTP_USER, conf.SMTP_PASS)
     smtpresult = session.sendmail(sender, recipients, msg)
@@ -183,7 +182,7 @@ def usage():
             [-M,--maxAsk <INTEGER>]              -- maximum price
             [-b,--bedrooms <INTEGER>]            -- number of bedrooms
             [-u,--url <STRING>]                  -- override the url
-            [-s,--batch-size <INTEGER>]          -- override the batch size
+            [-s,--batch-size <INTEGER>]          -- override the batch size (should be >= 1)
     """
 
 def get_args():
@@ -206,12 +205,45 @@ def get_args():
         if opt in ('-u', '--url'):
             conf.CRAIGS_URL=arg
         if opt in ('-s'  '--batch-size'):
+            if int(arg)<1:          # will check that arg is an integer
+                raise ValueError    # will check that arg is >= 1
             conf.BATCH_SIZE=arg
 
+def check_conf():
+    """Make sure configuration variables are set."""
+    # check SMTP credentials
+    try:
+        conf.SMTP_USER
+        conf.SMTP_PASS
+        conf.SMTP_SERVER
+    except AttributeError:
+        print "SMTP credentials are missing."
+        sys.exit(2)
+    
+    try:
+        conf.RECIPIENTS
+    except AttributeError:
+        print "RECIPIENTS variable is missing."
+        sys.exit(2)
+        
+    try:
+        conf.BATCH_SIZE
+        conf.CACHE_FILE
+        conf.CACHE_SIZE
+    except AttributeError:
+        print "One of mandatory variables BATCH_SIZE, CACHE_SIZE, or CACHE_FILE is missing."
+        sys.exit(2)
+
+#        
+#
+#
 if __name__=='__main__':
     try:
-        # get the options
+        # get the configuration
+        check_conf()
+        # check and read the options
         get_args();
+        # go...
         main()
     except ValueError:
         usage()
