@@ -21,12 +21,13 @@ import getopt
 import urllib2
 import smtplib
 from BeautifulSoup import BeautifulStoneSoup
+from collections import defaultdict
 
 QUERIES=[]
 MIN_ASK=""
 MAX_ASK=""
 BEDROOMS=""
-LISTINGS=[]
+LISTINGS=defaultdict(list)
 
 def main():
     """The main loop."""
@@ -67,19 +68,19 @@ def retrieve_listings(query, min_ask, max_ask, bedrooms):
             titles.add(title)
 
     # store the new listings from this round
-    LISTINGS += new_listings
+    LISTINGS[query] += new_listings
      
-    if len(LISTINGS)>=conf.BATCH_SIZE:
+    if len(LISTINGS[query])>=conf.BATCH_SIZE:
         # send the e-mail
-        msg = get_msg(LISTINGS, query)
+        msg = get_msg(LISTINGS[query], query)
         try:
             send_email(conf.SENDER, conf.RECIPIENTS.split(';'), msg)
-            LISTINGS=[]
+            LISTINGS[query]=[]
         except:
             print "Could not send email: ", sys.exc_info()[0]
     else:
         print "Not enough new listings. (%d, while BATCH_SIZE is %d.)"\
-                    % (len(LISTINGS), conf.BATCH_SIZE)
+                    % (len(LISTINGS[query]), conf.BATCH_SIZE)
     
     # persist
     if len(titles)>conf.CACHE_SIZE:
