@@ -64,8 +64,13 @@ def retrieve_listings(query, min_ask, max_ask, bedrooms):
 
     for listing in new_listings:
        LISTINGS.append(listing)
+
+    try:
+       batch_size = conf.BATCH_SIZE
+    except:
+       batch_size = 5
     
-    if len(LISTINGS)>=conf.BATCH_SIZE:
+    if len(LISTINGS)>=batch_size:
         # send the e-mail
         msg = get_msg(LISTINGS, query)
         try:
@@ -201,7 +206,7 @@ def get_args():
         if opt in ('-u', '--url'):
             conf.CRAIGS_URL=arg
         if opt in ('-s'  '--batch-size'):
-	    conf.BATCH_SIZE=arg
+            conf.BATCH_SIZE=arg
 
 if __name__=='__main__':
     try:
