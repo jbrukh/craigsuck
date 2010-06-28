@@ -65,7 +65,7 @@ def retrieve_listings(query, min_ask, max_ask, bedrooms):
     for listing in new_listings:
        LISTINGS.append(listing)
     
-    if len(LISTINGS)>=5:
+    if len(LISTINGS)>=conf.BATCH_SIZE:
         # send the e-mail
         msg = get_msg(LISTINGS, query)
         try:
@@ -178,13 +178,14 @@ def usage():
             [-M,--maxAsk <INTEGER>]              -- maximum price
             [-b,--bedrooms <INTEGER>]            -- number of bedrooms
             [-u,--url <STRING>]                  -- override the url
+            [-s,--batch-size <INTEGER>]          -- override the batch size
     """
 
 def get_args():
     global QUERIES, MIN_ASK, MAX_ASK, BEDROOMS
     """Get the commandline arguments."""
     opts,args = getopt.getopt(sys.argv[1:],\
-            "q:m:M:b:h", ['query=', 'minAsk=', 'maxAsk=', 'bedrooms=', 'help'])
+            "q:m:M:b:u:s:h", ['help', 'query=', 'minAsk=', 'maxAsk=', 'bedrooms=', 'url=', 'batch-size='])
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage()
@@ -199,6 +200,8 @@ def get_args():
             BEDROOMS=str(int(arg))
         if opt in ('-u', '--url'):
             conf.CRAIGS_URL=arg
+        if opt in ('-s'  '--batch-size'):
+	    conf.BATCH_SIZE=arg
 
 if __name__=='__main__':
     try:
