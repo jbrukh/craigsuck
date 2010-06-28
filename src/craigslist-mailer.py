@@ -66,10 +66,10 @@ def retrieve_listings(query, min_ask, max_ask, bedrooms):
             new_listings.append(item)
             titles.add(title)
 
-    for listing in new_listings:
-       LISTINGS.append(listing)
-    
-    if len(LISTINGS)>=batch_size:
+    # store the new listings from this round
+    LISTINGS += new_listings
+     
+    if len(LISTINGS)>=conf.BATCH_SIZE:
         # send the e-mail
         msg = get_msg(LISTINGS, query)
         try:
@@ -78,7 +78,8 @@ def retrieve_listings(query, min_ask, max_ask, bedrooms):
         except:
             print "Could not send email: ", sys.exc_info()[0]
     else:
-        print "Not enough new listings, only have %d listings so far." % len(LISTINGS)
+        print "Not enough new listings. (%d, while BATCH_SIZE is %d.)"\
+                    % (len(LISTINGS), conf.BATCH_SIZE)
     
     # persist
     if len(titles)>conf.CACHE_SIZE:
@@ -181,6 +182,7 @@ def usage():
             [-m,--minAsk <INTEGER>]              -- minimum price
             [-M,--maxAsk <INTEGER>]              -- maximum price
             [-b,--bedrooms <INTEGER>]            -- number of bedrooms
+                
             [-u,--url <STRING>]                  -- override the url
             [-s,--batch-size <INTEGER>]          -- override the batch size (should be >= 1)
     """
@@ -205,8 +207,9 @@ def get_args():
         if opt in ('-u', '--url'):
             conf.CRAIGS_URL=arg
         if opt in ('-s'  '--batch-size'):
-            if int(arg)<1:          # will check that arg is an integer
-                raise ValueError    # will check that arg is >= 1
+            arg = int(arg)          # raises ValueError if not integer
+            if arg<1:               # BATCH_SIZE must be >= 1
+                raise ValueError
             conf.BATCH_SIZE=arg
 
 def check_conf():
