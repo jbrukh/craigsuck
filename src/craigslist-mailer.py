@@ -56,12 +56,12 @@ def retrieve_listings(query, min_ask, max_ask, bedrooms):
         print "Set the CRAIGS_URL variable or specify --url."
         sys.exit(2)
     except:
-        print "Could not retrieve listings."
+        print "Could not retrieve listings:", sys.exc_info()[0]
         return
     
     new_listings = []
     for item in items:
-        title = "%s %s" % (item[0], item[1])
+        title = ("%s %s" % (item[0], item[1])).encode("ascii","ignore")
         if not title in titles:
             print title
             new_listings.append(item)
@@ -133,7 +133,7 @@ def extract( soup ):
 
 def strip_cdata( item ):
     """Removes ugly CDATA tags."""
-    return str(item).replace('<![CDATA[','').replace(']]>','')
+    return item.encode('ascii', 'ignore').replace('<![CDATA[','').replace(']]>','')
 
 def build_url( base_url, query="", min_ask="", max_ask="", bedrooms="" ):
     # at least one of the parameters must be non-trivial,
@@ -249,7 +249,8 @@ if __name__=='__main__':
         get_args();
         # go...
         main()
-    except ValueError:
+    except ValueError, strerror:
+        print "Error: ", strerror
         usage()
     except getopt.GetoptError:
         usage()
