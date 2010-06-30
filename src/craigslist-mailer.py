@@ -61,7 +61,7 @@ def retrieve_listings(query, min_ask, max_ask, bedrooms):
     
     new_listings = []
     for item in items:
-        title = item[0]
+        title = "%s %s" % (item[0], item[1])
         if not title in titles:
             print title
             new_listings.append(item)
@@ -95,7 +95,7 @@ def get_msg( new_listings, query ):
     """Create the listing summary email."""
     subject = "Apartments -- %d for Query: %s" % (len(new_listings), query)
     header = "From: %s\nTo: %s\nSubject: %s\n\n" % (conf.SENDER, conf.RECIPIENTS, subject)
-    body = header+"\n\n".join(["%s\n%s"%(item) for item in new_listings])  
+    body = header+"\n\n".join(["%s %s\n%s"%(item) for item in new_listings])  
     return body    
     
 def load_cache():
@@ -129,7 +129,7 @@ def scrape( url ):
 
 def extract( soup ):
     """Retrieves the titles and links of listings from the scrape as tuples."""
-    return [(strip_cdata(item.title.string), item.link.string) for item in soup('item')]
+    return [(item('dc:date')[0].string, strip_cdata(item.title.string), item.link.string) for item in soup('item')]
 
 def strip_cdata( item ):
     """Removes ugly CDATA tags."""
