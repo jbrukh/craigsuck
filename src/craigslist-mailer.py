@@ -4,11 +4,11 @@ Created on Jun 26, 2010
 @author: jbrukh
 
 Craigslist Mailer
-Copyright (c) 2010 Jake Brukhman
+Copyright (c) 2010-2011 Jake Brukhman
 LICENSE: Public domain.
 
 Periodically checks a Craigslist RSS feed for new listings and e-mails
-them to a recipient.  Set all configuration in conf.py.
+them to a recipient. Set all configuration in conf.py. See README.
 '''
 
 import sys
@@ -50,6 +50,7 @@ def retrieve_listings(query, min_ask, max_ask, bedrooms):
 
     try:
         url = build_url(conf.CRAIGS_URL, query, min_ask, max_ask, bedrooms)
+        print url
         items = extract(scrape(url))
     except AttributeError:
         # one of CRAIGS_URL or --url must be set!

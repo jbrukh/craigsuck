@@ -7,19 +7,14 @@ Created on Jun 26, 2010
 #
 # SET THE SMTP CREDENTIALS
 #
-SMTP_USER   ='username'
-SMTP_PASS   ='password'
+SMTP_USER   ='jbrukh'
+SMTP_PASS   ='Mywiiife6'
 SMTP_SERVER ='smtp.gmail.com'
 
 #
 # SET THE RECIPIENTS (COLON SEPARATED)
 #
-RECIPIENTS   ='you@poop.com;me@poop.com'
-
-#
-# SET THE BASE CRAIGSLIST URL TO SCRAPE
-#
-CRAIGS_URL  ="http://newyork.craigslist.org/search/aap/brk"  # search Brooklyn
+RECIPIENTS   ='jbrukh@gmail.com'
 
 #
 # OTHER VARIABLES
