@@ -7,6 +7,7 @@ Please see LICENSE, README.
 
 from BeautifulSoup import BeautifulStoneSoup
 import urllib2
+import re
 
 categories = { 	'aap': 'all apartments',
 				'nfa': 'all no fee apts',
@@ -35,7 +36,7 @@ searchType = {
 				'A':   'entire post'
 			 }
 
-def scrape(url, query='', srchType='A', bedrooms='', minAsk='1', maxAsk='', catAbb='aap', s=0):
+def listings(url, query='', srchType='A', bedrooms='', minAsk='1', maxAsk='', catAbb='aap', s=0):
 	"""
 	Scrapes the craigslist apartment search page and returns the listings from
 	that page.  Listings are composed of date, title, and url.
@@ -66,12 +67,11 @@ def scrape(url, query='', srchType='A', bedrooms='', minAsk='1', maxAsk='', catA
 
 	print full_url	
 	page = urllib2.urlopen(full_url)
-	soup = BeautifulStoneSoup(page, convertEntities=BeautifulStoneSoup.ALL_ENTITIES)
 
-	for listing in listings(soup):
-		print listing
+	# massage the pesky Craigslist CDATA tags so that entities are processed; TODO -- find out
+	# if it would be better to sanitize entities separately.
+	cdataMassage = [(re.compile('<!\[CDATA\[|]]>'), lambda match: '')]
+	soup = BeautifulStoneSoup(page, markupMassage=cdataMassage, convertEntities=BeautifulStoneSoup.ALL_ENTITIES)
 
-
-def listings(soup):
 	for item in soup('item'):
-		yield (item('dc:date')[0].contents, item.title.contents, item.link.contents)
+		yield (item('dc:date')[0].string, item.title.string, item.link.string)
