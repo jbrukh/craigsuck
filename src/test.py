@@ -1,3 +1,4 @@
-import scraper
+import craigslist
 
-scraper.scrape('http://newyork.craigslist.org/search/aap/brk')
+for listing in craigslist.listings('http://newyork.craigslist.org/search/aap/brk'):
+	print listing

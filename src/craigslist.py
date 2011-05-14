@@ -74,4 +74,4 @@ def listings(url, query='', srchType='A', bedrooms='', minAsk='1', maxAsk='', ca
 	soup = BeautifulStoneSoup(page, markupMassage=cdataMassage, convertEntities=BeautifulStoneSoup.ALL_ENTITIES)
 
 	for item in soup('item'):
-		yield (item('dc:date')[0].string, item.title.string, item.link.string)
+		yield {'date':item('dc:date')[0].string, 'title':item.title.string, 'link':item.link.string}
