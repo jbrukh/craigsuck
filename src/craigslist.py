@@ -71,7 +71,12 @@ def listings(url, query='', srchType='A', bedrooms='', minAsk='1', maxAsk='', ca
 	# massage the pesky Craigslist CDATA tags so that entities are processed; TODO -- find out
 	# if it would be better to sanitize entities separately.
 	cdataMassage = [(re.compile('<!\[CDATA\[|]]>'), lambda match: '')]
-	soup = BeautifulStoneSoup(page, markupMassage=cdataMassage, convertEntities=BeautifulStoneSoup.ALL_ENTITIES)
+	soup = BeautifulStoneSoup(page, markupMassage=cdataMassage,
+			convertEntities=BeautifulStoneSoup.ALL_ENTITIES)
 
 	for item in soup('item'):
-		yield {'date':item('dc:date')[0].string, 'title':item.title.string, 'link':item.link.string}
+		yield {
+			'date':  item('dc:date')[0].string,
+			'title': item.title.string, 
+			'link':  item.link.string
+			  }
