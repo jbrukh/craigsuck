@@ -24,20 +24,18 @@ def save_cache( urls ):
     file.close()
 
 def main(opts):
-    if not opts.query:
-        opts.query = [""]
     while True:
         for query in opts.query:
             try:
                 listings = update(url=opts.url, query=query, minAsk=opts.minAsk,maxAsk=opts.maxAsk, 
-						bedrooms=opts.bedrooms, srchType=opts.srchType, catAbb=opts.catAbb, s=opt.s)
+						bedrooms=opts.bedrooms, srchType=opts.srchType, catAbb=opts.catAbb, s=opts.s)
             except Exception, err:
                 print "Error", err
+		for listing in listings:
+			print listing
 		sleep_time = random.randint(60,60*5)
 		print "Sleeping %d seconds..." % sleep_time
 		time.sleep(sleep_time)
-
-
 
 def update(**kwargs):
 	"""
@@ -50,7 +48,6 @@ def update(**kwargs):
 	for listing in listings:
 		link = listing['link']
 		if link not in visited:
-			print listing['title']
 			new_listings.append(listing)
 			visited.add(link)
 	save_cache(visited)	
@@ -67,7 +64,14 @@ if __name__ == '__main__':
 	cats = " | ".join([" ~ ".join(map(str,item)) for item in craigslist.categories.items()])
 	parser.add_option('-c', '--category', action='store', dest='catAbb', help="TYPES: "+cats, default='aap') 
 	parser.add_option('-t', '--search-title-only', action='store_true', dest='titleOnly', help='search title only (as opposed to whole post)', default=False)
+	parser.add_option('-o', '--offset', action='store', dest='s', help='specify the search page offset', default=0)
 	opts,_ = parser.parse_args()
+
+	if opts.titleOnly:
+		opts.srchType = 'T'
+	else:
+		opts.srchType = 'A'
+
 	try:
 		main(opts)
 	except KeyboardInterrupt:

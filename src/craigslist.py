@@ -64,19 +64,20 @@ def listings(url, query='', srchType='A', bedrooms='', minAsk='1', maxAsk='', ca
 	# prepare the url
 	full_url = "%s?format=rss&query=%s&catAbb=%s&srchType=%s&minAsk=%s&maxAsk=%s&bedrooms=%s&s=%s" %\
 				(url.rstrip('/'), '+'.join(query.split(' ')), catAbb, srchType, minAsk, maxAsk, bedrooms, s)
+	fetch(full_url)
 
-	print full_url	
-	page = urllib2.urlopen(full_url)
+def fetch(full_url):
+	print full_url
+    page = urllib2.urlopen(full_url)
+    # massage the pesky Craigslist CDATA tags so that entities are processed; TODO -- find out
+    # if it would be better to sanitize entities separately.
+    cdataMassage = [(re.compile('<!\[CDATA\[|]]>'), lambda match: '')]
+    soup = BeautifulStoneSoup(page, markupMassage=cdataMassage,
+            convertEntities=BeautifulStoneSoup.ALL_ENTITIES)
+    for item in soup('item'):
+        yield {
+    	        'date':  item('dc:date')[0].string,
+        	    'title': item.title.string,
+           	 	'link':  item.link.string
+              }
 
-	# massage the pesky Craigslist CDATA tags so that entities are processed; TODO -- find out
-	# if it would be better to sanitize entities separately.
-	cdataMassage = [(re.compile('<!\[CDATA\[|]]>'), lambda match: '')]
-	soup = BeautifulStoneSoup(page, markupMassage=cdataMassage,
-			convertEntities=BeautifulStoneSoup.ALL_ENTITIES)
-
-	for item in soup('item'):
-		yield {
-			'date':  item('dc:date')[0].string,
-			'title': item.title.string, 
-			'link':  item.link.string
-			  }
