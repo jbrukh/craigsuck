@@ -1,11 +1,8 @@
-## craigsuck
-### A Craigslist RSS poller.
+## craigsuck: A Craigslist RSS poller.
 
-Copyright (c) 2010 Jake Brukhman
+Copyright (c) 2010 Jake Brukhman. (`jbrukh@gmail.com`)
 
-Periodically checks a Craigslist RSS feed for listings. The goal is to then send an e-mail
-containing the listings to interested party, though this feature is unimplemented in this
-version.  See the legacy `craigslist-mailer` tags (`1.0.x`) for e-mail functionality.
+Periodically checks a Craigslist RSS feed for listings and pipes them to output.  See the legacy `craigslist-mailer` tags (`1.0.x`) for e-mail functionality.
 
 INSTALLATION
 

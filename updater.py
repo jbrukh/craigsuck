@@ -59,7 +59,6 @@ def main(queries, opts):
 			for listing in new_listings:
 				print "\t%s" % listing['title']
 			process_new(new_listings)
-		print "\nSleeping %d seconds...\n" % opts.sleep
 		time.sleep(opts.sleep)
 
 def process_new(listings):
@@ -69,7 +68,7 @@ def update(queries, queue):
 	"""
 	Fetches the listings and returns the new ones, if any.
 	"""
-	listings = craigslist.fetch_all(queries)
+	listings = reversed(craigslist.fetch_all(queries))
 	return [l for l in listings if queue.push(l['link'])]	
 
 if __name__ == '__main__':
