@@ -73,7 +73,7 @@ def update(queries, queue):
 if __name__ == '__main__':
 	parser = optparse.OptionParser()
 	parser.add_option('-m', '--memory', dest='memory', type='int', default=100)
-	parser.add_option('-s', '--sleep', dest='sleep', type='int', default='30')
+	parser.add_option('-s', '--sleep', dest='sleep', type='int', default=30)
 	opts, args = parser.parse_args()
 	
 	try:
