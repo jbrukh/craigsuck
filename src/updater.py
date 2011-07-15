@@ -11,7 +11,7 @@ def load_cache():
     """Load the cache."""
     # check whether the file exists
     if not os.path.exists(CACHE_FILE):
-        save_cache(set())
+        return set()
     fp = open(CACHE_FILE,'r')
     urls = pickle.load(fp)
     fp.close()
@@ -38,6 +38,7 @@ def update(queries):
     new listings that haven't yet been cached and return them.
     """
     visited = load_cache()
+
     new_listings = []
     listings = craigslist.fetch_all(queries)
     for listing in listings:
@@ -45,13 +46,13 @@ def update(queries):
         if link not in visited:
             new_listings.append(listing)
             visited.add(link)
-    save_cache(visited)
+   # save_cache(visited)
     return new_listings
 
 if __name__ == '__main__':
     parser = optparse.OptionParser()
     _,args = parser.parse_args()
-
+    
     try:
         main(args)
     except KeyboardInterrupt:
