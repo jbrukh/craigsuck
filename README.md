@@ -1,5 +1,4 @@
-## craigsuck
-### A Craigslist RSS poller.
+## craigsuck: A Craigslist RSS poller.
 
 Copyright (c) 2010 Jake Brukhman
 
