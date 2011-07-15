@@ -8,11 +8,10 @@ Periodically checks a Craigslist RSS feed for new apartment listings and e-mails
 
 INSTALLATION
 
-* Install BeautifulSoup. See 
+* Install `BeautifulSoup`. See [this page][http://stackoverflow.com/questions/452283/how-can-i-install-the-beautiful-soup-module-on-the-mac] for Mac instructions.
+* Run:
 
-      http://stackoverflow.com/questions/452283/how-can-i-install-the-beautiful-soup-module-on-the-mac
-
-* Customize your settings in conf.py.
+   `updater.py --help`
 
 USAGE
 
