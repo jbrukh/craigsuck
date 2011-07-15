@@ -7,38 +7,17 @@ import time
 
 CACHE_FILE = 'urls.cache'
 
-def load_cache():
-    """Load the cache."""
-    # check whether the file exists
-    if not os.path.exists(CACHE_FILE):
-        return set()
-    fp = open(CACHE_FILE,'r')
-    urls = pickle.load(fp)
-    fp.close()
-    return urls
-
-def save_cache( urls ):
-    """Cache an object."""
-    fp = open(CACHE_FILE,'w')
-    pickle.dump(urls, fp)
-    fp.close()
-
 def main(queries):
+	visited = set()
     while True:
         print "Updating..."
         for query in queries:
-            listings = update(queries)
+            listings = update(queries, visited)
             for listing in listings:
                 print listing 
         time.sleep(10)
 
-def update(queries):
-    """
-    Given the particular craigslist arguments in kwargs, retrieve
-    new listings that haven't yet been cached and return them.
-    """
-    visited = load_cache()
-
+def update(queries, visited):
     new_listings = []
     listings = craigslist.fetch_all(queries)
     for listing in listings:
@@ -46,7 +25,6 @@ def update(queries):
         if link not in visited:
             new_listings.append(listing)
             visited.add(link)
-   # save_cache(visited)
     return new_listings
 
 if __name__ == '__main__':
