@@ -1,3 +1,10 @@
+"""
+Craigslist Apartments Scraper.
+Copyright (c) 2011. Jake Brukhman <jbrukh@gmail.com>.
+
+Please see LICENSE, README.
+"""
+
 import craigslist
 import os.path
 import pickle
