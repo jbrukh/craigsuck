@@ -1,33 +1,21 @@
-Craigslist Apartment Scraper
-============================
+## craigsuck
+### A Craigslist RSS poller.
 
 Copyright (c) 2010 Jake Brukhman
 
-Periodically checks a Craigslist RSS feed for new apartment listings and e-mails
-
+Periodically checks a Craigslist RSS feed for listings. The goal is to then send an e-mail
+containing the listings to interested party, though this feature is unimplemented in this
+version.  See the legacy `craigslist-mailer` tags (`1.0.x`) for e-mail functionality.
 
 INSTALLATION
 
-* Install `BeautifulSoup`. See [this page][http://stackoverflow.com/questions/452283/how-can-i-install-the-beautiful-soup-module-on-the-mac] for Mac instructions.
-* Run:
-
-   `updater.py --help`
+* `craigsuck` depends on `BeautifulSoup`. See [this page][http://stackoverflow.com/questions/452283/how-can-i-install-the-beautiful-soup-module-on-the-mac] for Mac instructions.
 
 USAGE
 
-Find your favorite craigslist apartments URL, and set the CRAIGS_URL variable in conf.py.  For instance,
-to search for "all apartments in Brooklyn", find the Craigslist 3-letter code for Brooklyn: "brk".  Set
-the url to:
+Navigate to the Craigslist page you'd like to keep an eye on and copy the URL.  Examples:
 
-  http://newyork.craigslist.org/search/aap/brk
+* http://newyork.craigslist.org/rnr/
+* http://sfbay.craigslist.org/search/apa/sby?query=&srchType=A&minAsk=&maxAsk=&bedrooms=&addTwo=purrr
 
-You can also set "abo" for "apartments by owner" and other Craigslist codes.  To run the script:
-
-  $ python craigslist-mailer.py --query "williamsburg" --maxAsk 3000
-
-will find all Williamsburg apartments with a maximum price of $3000.  You can search for multiple
-neighborhoods simultaneously by separating them with a comma:
-
-  $ python craigslist-mailer.py --query "williamsburg,park slope,clinton hill" --maxAsk 3000 --bedrooms 2
-
-And so forth.  See --help for further usage.
+Give a list of URLS to `craigsuck`.
