@@ -6,7 +6,7 @@ Periodically checks a Craigslist RSS feed for listings and pipes them to output.
 
 INSTALLATION
 
-* `craigsuck` depends on `BeautifulSoup`. See [this page][http://stackoverflow.com/questions/452283/how-can-i-install-the-beautiful-soup-module-on-the-mac] for Mac instructions.
+* `craigsuck` depends on `BeautifulSoup`. See [this page](http://stackoverflow.com/questions/452283/how-can-i-install-the-beautiful-soup-module-on-the-mac) for Mac instructions.
 
 USAGE
 
