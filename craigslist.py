@@ -29,7 +29,7 @@ def fetch(full_url):
     cdataMassage = [(re.compile('<!\[CDATA\[|]]>'), lambda match: '')]
     soup = BeautifulStoneSoup(page, markupMassage=cdataMassage,
                 convertEntities=BeautifulStoneSoup.ALL_ENTITIES)
-    for item in soup('item'):
+    for item in reversed(soup('item')):
         yield {
                 'date':  item('dc:date')[0].string,
                 'title': item.title.string,
