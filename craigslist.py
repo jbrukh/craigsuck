@@ -42,7 +42,6 @@ def fetch_with_pages_back(full_url, pages=1):
                lambda p: '%s&s=%s' % (full_url, p),
                s
            )
-    print urls
     return fetch_all(urls)
 
 def fetch_all(queries):

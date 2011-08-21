@@ -8,6 +8,7 @@ Copyright (c) 2011. Jake Brukhman <jbrukh@gmail.com>. See LICENSE.
 import craigslist
 import optparse
 import time
+import sys 
 from string import Template
 
 class LookupQueue(object):
@@ -77,8 +78,15 @@ if __name__ == '__main__':
             help="output format, using Python formatting; available fields are ['date', 'title', 'link'] and \
 			the default format is '${date}\\t${title}'")
     parser.add_option('-p', '--pages', dest='pages', default=1, type='int',
-            help="the number of pages back from this url, if possible")
+            help="the number of pages back from this url, if possible, up to 10")
     opts, args = parser.parse_args()
+   
+    if len(args)>1 or len(args)<0:
+        print "Please provide exactly one url."
+        sys.exit(1)
+    if opts.pages<0 or opts.pages>10:
+        print "Ten pages back maximum."
+        sys.exit(1)
     
     try:
         main(args[0], opts)
