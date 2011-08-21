@@ -8,6 +8,7 @@ Copyright (c) 2011. Jake Brukhman <jbrukh@gmail.com>. See LICENSE.
 import craigslist
 import optparse
 import time
+from string import Template
 
 class LookupQueue(object):
     """
@@ -57,7 +58,7 @@ def main(queries, opts):
         for query in queries:
             new_listings = update(queries, queue)
             for listing in new_listings:
-                print opts.format % listing
+                print Template(opts.format).safe_substitute(listing)
             process_new(new_listings)
         time.sleep(opts.sleep)
 
@@ -72,14 +73,15 @@ def update(queries, queue):
     return [l for l in listings if queue.push(l['link'])]   
 
 if __name__ == '__main__':
-    parser = optparse.OptionParser()
+    USAGE = '%prog [options] <url>...'
+    parser = optparse.OptionParser(usage=USAGE)
     parser.add_option('-m', '--memory', dest='memory', type='int', default=1000,
             help='number of historical items against which to test for uniqueness (set high)')
     parser.add_option('-s', '--sleep', dest='sleep', type='int', default=30, 
             help='polling period, in seconds')
-    parser.add_option('-f', '--format', dest='format', default='%(date)s\t%(title)s', type='string',
+    parser.add_option('-f', '--format', dest='format', default='${date}\t${title}', type='string',
             help="output format, using Python formatting; available fields are ['date', 'title', 'link'] and \
-			the default format is '%(date)s\\t%(title)s'") 
+			the default format is '${date}\\t${title}'") 
     opts, args = parser.parse_args()
     
     try:
