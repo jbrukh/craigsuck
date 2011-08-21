@@ -48,32 +48,26 @@ class LookupQueue(object):
     def __repr__(self):
         return self.q.__str__()
 
-def main(queries, opts):
+def main(query, opts):
     """
     Indefinitely cycles through the queries provided to the program,
     and extracts the new apartment information.
     """
     queue = LookupQueue(opts.memory)
     while True:
-        for query in queries:
-            new_listings = update(queries, queue)
-            for listing in new_listings:
-                print Template(opts.format).safe_substitute(listing)
-            process_new(new_listings)
+        listings = craigslist.fetch_with_pages_back(query, pages=opts.pages)
+        new_listings = [l for l in listings if queue.push(l['link'])]
+        for listing in new_listings:
+            print Template(opts.format).safe_substitute(listing)
+        process_new(new_listings)
         time.sleep(opts.sleep)
 
 def process_new(listings):
     pass
 
-def update(queries, queue):
-    """
-    Fetches the listings and returns the new ones, if any.
-    """
-    listings = craigslist.fetch_all(queries)
-    return [l for l in listings if queue.push(l['link'])]   
 
 if __name__ == '__main__':
-    USAGE = '%prog [options] <url>...'
+    USAGE = '%prog [options] <url>'
     parser = optparse.OptionParser(usage=USAGE)
     parser.add_option('-m', '--memory', dest='memory', type='int', default=1000,
             help='number of historical items against which to test for uniqueness (set high)')
@@ -81,10 +75,12 @@ if __name__ == '__main__':
             help='polling period, in seconds')
     parser.add_option('-f', '--format', dest='format', default='${date}\t${title}', type='string',
             help="output format, using Python formatting; available fields are ['date', 'title', 'link'] and \
-			the default format is '${date}\\t${title}'") 
+			the default format is '${date}\\t${title}'")
+    parser.add_option('-p', '--pages', dest='pages', default=1, type='int',
+            help="the number of pages back from this url, if possible")
     opts, args = parser.parse_args()
     
     try:
-        main(args, opts)
+        main(args[0], opts)
     except KeyboardInterrupt:
         print "Goodbye!"

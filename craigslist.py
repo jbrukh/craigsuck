@@ -36,6 +36,15 @@ def fetch(full_url):
                 'link':  item.link.string
               }
 
+def fetch_with_pages_back(full_url, pages=1):
+    s = range(100*(pages-1),-1,-100)
+    urls = map(
+               lambda p: '%s&s=%s' % (full_url, p),
+               s
+           )
+    print urls
+    return fetch_all(urls)
+
 def fetch_all(queries):
     for query in queries:
         for listing in fetch(query):
