@@ -37,7 +37,7 @@ def fetch(full_url):
               }
 
 def fetch_with_pages_back(full_url, pages=1):
-    s = range(100*(pages-1),-1,-100)
+    s = range(100*(pages-1),-1,-100) # page offsets: cl "s=" parameter
     urls = map(
                lambda p: '%s&s=%s' % (full_url, p),
                s
