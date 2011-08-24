@@ -25,8 +25,8 @@ Give a list of URLS to `craigsuck`, for instance:
 
     ./craigsuck "http://newyork.craigslist.org/brk/aap/"
 
-To change the output format, you can specify it using the `--format` option. Format is given in Python style, with `link`, `title`, or `date` as possible parameters.
+To change the output format, you can specify it using the `--format` option. Format is given in Python templates style, with `link`, `title`, or `date` as possible parameters.
 
-    ./craigsuck --format "%(date)s - %(title)s" "http://newyork.craigslist.org/brk/aap/"
+    ./craigsuck --format "${date} - ${title}" "http://newyork.craigslist.org/brk/aap/"
 
 See `--help` for details.
